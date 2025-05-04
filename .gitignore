@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+*.env
+
+# 金鑰、憑證
+*.json
+
+# VSCode 與虛擬環境
+.vscode/
+.venv/

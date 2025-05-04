@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>所有名片列表</title>
+</head>
+<body>
+
+    {% extends "base.html" %}
+
+    {% block title %}名片集{% endblock %}
+
+    {% block content %}
+
+     
+
+    <h1>所有名片資料</h1>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>檔案名稱</th>
+            <th>文字內容</th>
+            <th>建立時間</th>
+        </tr>
+        {% for card in cards %}
+        <tr>
+            <td>{{ card[0] }}</td>
+            <td>{{ card[1] }}</td>
+            <td><pre>{{ card[2] }}</pre></td>
+            <td>{{ card[3] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br>
+    {% endblock %} 
+</body>
+</html>

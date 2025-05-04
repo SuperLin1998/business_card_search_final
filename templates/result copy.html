@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>搜尋結果</title>
+</head>
+<body>
+  <h2>搜尋結果 for "{{ keyword }}"</h2>
+
+  {% if results %}
+    {% for r in results %}
+      <div style="margin-bottom:20px;">
+        <img src="{{ r.image_path }}" width="150"><br>
+        <pre>{{ r.raw_text }}</pre>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>沒有找到符合的名片資料。</p>
+  {% endif %}
+
+  <br>
+  <a href="{{ url_for('index') }}">回首頁</a>
+</body>
+</html>

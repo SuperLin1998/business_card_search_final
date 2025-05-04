@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}乃至千里萬~歲~{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <nav>
+      <div class="logo">乃至千里</div>
+      <input type="checkbox" id="click">
+      <label for="click" class="menu-btn">
+        <i class="fas fa-bars"></i>
+      </label>
+      <ul>
+        <li><a class="{% if request.endpoint == 'index' %}active{% endif %}" href="{{ url_for('index') }}">首頁</a></li>
+        <li><a class="{% if request.endpoint == 'upload' %}active{% endif %}" href="{{ url_for('upload') }}">上傳</a></li>
+        <li><a class="{% if request.endpoint == 'search' %}active{% endif %}" href="{{ url_for('search') }}">搜尋</a></li>
+        <!-- 測試 
+        <li><a class="{% if request.endpoint == 'list_cards' %}active{% endif %}" href="{{ url_for('list_cards') }}">名片集</a></li>
+        -->
+        <li><a class="{% if request.endpoint == 'other' %}active{% endif %}" href="{{ url_for('other') }}">其他</a></li>
+      </ul>
+    </nav>
+
+    {% block content %}
+    {% endblock %}
+</body>
+</html>

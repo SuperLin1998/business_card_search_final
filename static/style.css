@@ -1,0 +1,455 @@
+/* ================================================
+    全域設定（適用於所有 HTML 頁面）
+    設定基礎字型、邊距、padding、盒子模型
+================================================= */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+
+* {
+  margin: 0; /* 移除所有元素的預設外距 */
+  padding: 0; /* 移除所有元素的預設內距 */
+  box-sizing: border-box; /* 讓元素的 padding 和 border 不影響總尺寸 */
+  font-family: 'Poppins', sans-serif; /* 全站字型設為 Poppins */
+}
+
+/* ================================================
+    base.html - 導覽列(nav)
+    負責整個網站的上方導覽列外觀
+================================================= */
+nav {
+  display: flex; /* 使用 Flexbox 排列內容 */
+  height: 80px; /* 導覽列高度 */
+  width: 100%; /* 滿版寬度 */
+  background: #1b1b1b; /* 深灰背景 */
+  align-items: center; /* 垂直置中對齊 */
+  justify-content: space-between; /* 左右分散排列 (Logo在左, 選單在右) */
+  padding: 0 50px 0 100px; /* 內距：左多一點，右少一點 */
+  flex-wrap: wrap; /* 當螢幕縮小時允許元素換行 */
+  /* 客製建議：
+     - 改顏色：background 可以設成漸層或其他色 (#333, #444等)
+     - 改padding：讓Logo靠更近或更遠 */
+}
+
+/* 導覽列的 Logo 樣式 */
+nav .logo {
+  color: #fff; /* 白色文字 */
+  font-size: 35px; /* 大字 */
+  font-weight: 600; /* 粗體 */
+  /* 客製建議：
+     - 可以用圖片取代文字
+     - 可以增加hover特效 */
+}
+
+/* 導覽列中的選單 ul */
+nav ul {
+  display: flex; /* 選單橫向排列 */
+  flex-wrap: wrap; /* 螢幕小時自動換行 */
+  list-style: none; /* 移除前面的點點 */
+}
+
+/* 選單每個列表項目 */
+nav ul li {
+  margin: 0 5px; /* 左右留5px空隙 */
+}
+
+/* 選單裡每個連結 */
+nav ul li a {
+  color: #f2f2f2; /* 淺灰色文字 */
+  text-decoration: none; /* 移除底線 */
+  font-size: 18px;
+  font-weight: 500;
+  padding: 8px 15px; /* 內距增加點擊範圍 */
+  border-radius: 5px;
+  letter-spacing: 1px; /* 字元間距 */
+  transition: all 0.3s ease; /* hover時滑順效果 */
+  /* 客製建議：
+     - 修改padding讓按鈕更大
+     - 改顏色讓風格更活潑 */
+}
+
+/* 選單目前所在頁(active)或滑鼠移到上面時的樣式 */
+nav ul li a.active,
+nav ul li a:hover {
+  color: #111; /* 文字變深色 */
+  background: #fff; /* 背景變白 */
+}
+
+/* 漢堡選單 icon (手機版) */
+nav .menu-btn i {
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  display: none; /* 預設桌機版不顯示 */
+}
+
+/* 隱藏原生的checkbox（用來做漢堡選單切換） */
+input[type="checkbox"] {
+  display: none;
+}
+
+/* ================================================
+    響應式設計 (螢幕小於1000px時)
+================================================= */
+@media (max-width: 1000px) {
+  nav {
+    padding: 0 40px 0 50px; /* 導覽列左右內距縮小，節省空間 */
+  }
+}
+
+/* ================================================
+    響應式設計 (螢幕小於920px時 - 手機版)
+================================================= */
+@media (max-width: 920px) {
+  /* 顯示漢堡選單icon */
+  nav .menu-btn i {
+    display: block;
+  }
+
+  /* 當checkbox有勾選時，改變icon成關閉符號 (X) */
+  #click:checked ~ .menu-btn i:before {
+    content: "\f00d"; /* FontAwesome關閉符號 */
+  }
+
+  /* 手機版下拉選單預設隱藏 */
+  nav ul {
+    position: fixed;
+    top: 200px; /* 距離頂端200px (可以調整成80px比較自然) */
+    left: -100%; /* 隱藏在左邊外面 */
+    background: #111;
+    height: 100vh; /* 整個螢幕高度 */
+    width: 100%;
+    text-align: center;
+    display: block;
+    transition: all 0.3s ease;
+  }
+
+  /* 漢堡選單打開時，把選單滑出來 */
+  #click:checked ~ ul {
+    left: 0;
+  }
+
+  /* 手機版選單項目樣式 */
+  nav ul li {
+    width: 100%;
+    margin: 40px 0; /* 每個選項上下留空隙 */
+  }
+
+  nav ul li a {
+    width: 100%;
+    margin-left: -100%;
+    display: block;
+    font-size: 20px;
+    transition: 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); /* 漂亮滑動效果 */
+  }
+
+  /* 手機版打開選單時，讓項目滑入 */
+  #click:checked ~ ul li a {
+    margin-left: 0px;
+  }
+
+  /* 手機版 hover/active 樣式改為高亮藍色 */
+  nav ul li a.active,
+  nav ul li a:hover {
+    background: none;
+    color: cyan;
+  }
+}
+
+/* ================================================
+    base.html - 主要內容區塊 (.content)
+    負責置中首頁、upload頁、search頁等等主要文字
+================================================= */
+/* ================================================
+  首頁內容 - 完全上下左右置中
+================================================= */
+.content {
+  display: flex; /* 啟用 Flex 排版 */
+  flex-direction: column; /* 垂直方向排列 */
+  justify-content: center; /* 垂直方向置中 */
+  align-items: center;     /* 水平方向置中 */
+  height: calc(100vh - 380px); /* 扣除 nav 高度後的可視區域 */
+  text-align: center;
+  padding: 0 30px;
+  margin: 0 auto;
+  color: #1b1b1b;
+}
+
+
+/* 首頁/內容頁的大標題 */
+.content h2 {
+  font-size: 60px;
+  font-weight: 700;
+  /* 客製建議：
+     - 改顏色來做出主題色
+     - 加上文字陰影更立體 */
+}
+
+/* 首頁/內容頁的副標題/說明文字 */
+.content div {
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 2;
+  /* 客製建議：
+     - 如果要更多層級，可以另外加上<p>或<span> */
+}
+
+/* ================================================
+    補充：基礎 body 設定
+================================================= */
+body {
+  min-height: 100vh; /* 保持最小高度為螢幕高度 */
+  background: #f0f0f0; /* 淺灰背景，讓內容有浮起的感覺 */
+}
+
+/* 更新 content 的位置調整 (讓內容不會被nav蓋住) */
+.content {
+  position: relative;
+  top: 100px; /* 內容區塊往下推，留出導航列高度 */
+}
+
+/* ================================================
+  Search 頁面 - Card Style 表格樣式（黑白灰風格）
+================================================= */
+
+/* 搜尋容器初始置中 */
+.search-container {
+  max-width: 800px;
+  padding: 40px 20px;
+  margin: 0 auto;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+}
+
+/* 搜尋容器搜尋後置頂 */
+.search-container.top-align {
+  align-items: flex-start;
+  justify-content: flex-start;
+  min-height: auto;
+  padding-top: 20px;
+}
+
+/* 搜尋標題樣式 */
+.search-title {
+  font-size: 2em;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* 搜尋表單樣式 */
+.search-form {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+/* 輸入框樣式 */
+.search-form input[type="text"] {
+  padding: 10px;
+  font-size: 1em;
+  width: 300px;
+}
+
+/* 按鈕樣式 */
+.search-form button {
+  padding: 10px 20px;
+  font-size: 20px; /* 大小 */
+  font-weight: 800; /* 粗體 */
+  cursor: pointer;
+}
+
+/* 結果表格樣式 */
+.result-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-family: 'Arial', sans-serif;
+  font-size: 16px;
+  color: #333;
+}
+
+/* 表格標題樣式 */
+.result-table thead th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+  font-size: 30px; /* 大字 */
+  font-weight: 800; /* 粗體 */
+  text-align: left;
+  padding: 20px;
+}
+
+/* 表格內容樣式 */
+.result-table tbody td {
+  background-color: #fff;
+  font-size: 24px; /* 大字 */
+  font-weight: 600; /* 粗體 */
+  line-height: 1.5; /* 行高 */
+  padding: 10px;
+  vertical-align: middle;
+  text-align: left;
+}
+
+/* 移除表格框線 */
+.result-table th, .result-table td {
+  border: none;
+}
+
+/* 原始文字欄位樣式 */
+.raw-text {
+  white-space: pre-wrap;
+}
+
+/* 無結果提示樣式 */
+.no-results {
+  text-align: center;
+  font-size: 1.2em;
+  color: #666;
+  margin-top: 20px;
+}
+
+/* 縮圖樣式 */
+.thumbnail {
+  width: 120px;
+  height: auto;
+  cursor: pointer;
+  border: 1px solid #888;
+  border-radius: 4px;
+}
+
+/* Lightbox 遮罩樣式 */
+.lightbox {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.8);
+  justify-content: center;
+  align-items: center;
+}
+
+.lightbox img {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+}
+
+/* ================================================
+  表格中的刪除紐
+================================================= */
+
+.delete-btn {
+  margin-top: 5px;
+  padding: 5px 10px;
+  color: white;
+  background-color: red;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.delete-btn:hover {
+  background-color: darkred;
+}
+
+
+/* ================================================
+  Upload 頁面 - 表單美化樣式（黑白灰風格）
+================================================= */
+
+/* 套用在 upload.html 的內容區塊 */
+.upload-wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  color: #1b1b1b;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* 標題區域 */
+.upload-wrapper h3 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+}
+
+/* 表單內的文字區塊 */
+.upload-wrapper form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* 檔案上傳欄 */
+.upload-wrapper input[type="file"] {
+  font-size: 24px; /* 大小 */
+  font-weight: 500; /* 粗體 */
+  padding: 10px;
+  border: 1px solid #ccc;
+  background: #fafafa;
+  border-radius: 6px;
+}
+
+/* 上傳按鈕、確認按鈕 */
+.upload-wrapper button {
+  font-size: 24px; /* 大小 */
+  font-weight: 500; /* 粗體 */
+  background-color: #1b1b1b;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.upload-wrapper button:hover {
+  background-color: #444;
+}
+
+/* 多行輸入區（辨識文字） */
+.upload-wrapper textarea {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-family: monospace;
+  padding: 10px;
+  font-size: 24px; /* 大小 */
+  font-weight: 500; /* 粗體 */
+  line-height: 1.5; /* 行高 */
+  resize: vertical;
+  min-height: 180px;
+  background-color: #fafafa;
+}
+
+/* flash message 提示訊息 */
+.upload-wrapper ul {
+  padding: 0;
+  list-style-type: none;
+  margin-bottom: 20px;
+  color: green;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* 圖片顯示（辨識後） */
+.upload-wrapper img {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}

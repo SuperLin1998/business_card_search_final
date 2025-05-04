@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}搜尋名片{% endblock %}
+
+{% block content %}
+<div class="search-container {% if results %}top-align{% endif %}">
+    <h1 class="search-title">搜尋結果</h1>
+    <form method="POST" action="{{ url_for('search') }}" class="search-form">
+        <input type="text" name="keyword" placeholder="輸入任何關鍵字..." required>
+        <button type="submit">搜尋</button>
+    </form>
+</div>
+
+{% if results %}
+    <table class="result-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>檔名</th>
+                <th>名片圖片</th>
+                <th>辨識文字 (原始結果)</th>
+                <th>建立時間</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for card in results %}
+                <tr>
+                    <td>{{ card.id }}</td>
+                    <td>{{ card.filename }}</td>
+                    <td>
+                        <img src="{{ url_for('static', filename='uploads/' + card.filename) }}" alt="Card Image" class="thumbnail" onclick="openLightbox(this.src)">
+                    </td>
+                    <td class="raw-text">{{ card.raw_text }}</td>
+                    <td>{{ card.created_at }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('delete_card', card_id=card.id) }}" onsubmit="return confirm('確定要刪除此名片嗎？')">
+                            <button type="submit" class="delete-btn">刪除</button>
+                        </form>
+                    </td>
+                    
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p class="no-results">找不到符合的結果。</p>
+{% endif %}
+
+<!-- Lightbox 遮罩 -->
+<div id="lightbox" class="lightbox" onclick="closeLightbox()">
+    <img id="lightbox-img" src="">
+</div>
+
+<script>
+    function openLightbox(src) {
+        document.getElementById('lightbox-img').src = src;
+        document.getElementById('lightbox').style.display = 'flex';
+    }
+
+    function closeLightbox() {
+        document.getElementById('lightbox').style.display = 'none';
+    }
+</script>
+{% endblock %}

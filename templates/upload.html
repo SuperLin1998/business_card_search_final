@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{# ✅ 告訴Flask，這個是繼承base.html的頁面 #}
+
+{% block title %}
+上傳名片
+{% endblock %}
+
+{% block content %}
+<div class="upload-wrapper">
+
+{% with msgs = get_flashed_messages() %}
+    {% if msgs %}
+      <ul style="color:green;">
+      {% for m in msgs %}
+        <li>{{m}}</li>
+      {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  {% if ocr_text is defined %}
+    <!-- 辨識結果編輯區 -->
+    <h3>辨識結果 (可手動修正)</h3>
+    <img src="{{ url_for('static',filename='uploads/'+filename) }}" width="200"><br>
+    <form method="POST">
+      <input type="hidden" name="filename" value="{{filename}}">
+      <textarea name="corrected_text" rows="10" cols="60">{{ocr_text}}</textarea><br>
+      <button type="submit">確認並儲存</button>
+    </form>
+    <br><a href="{{ url_for('upload') }}">重新上傳</a>
+  {% else %}
+    <!-- 初始上傳表單 -->
+    <h3>上傳您的名片</h3>
+    <form method="POST" enctype="multipart/form-data">
+      <input type="file" name="file" accept="image/*" required>
+      <button type="submit">上傳並辨識</button>
+    </form>
+  {% endif %}
+</div>
+{% endblock %}
