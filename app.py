@@ -1,21 +1,48 @@
 from flask import Flask, request, render_template, redirect, url_for, flash, get_flashed_messages
 from werkzeug.utils import secure_filename
 from extractor import extract_text  # 新增
-#from mydb.db_utils import save_to_sqlite
 from mydb.db_utils import save_to_postgres, get_connection # 新增
-from search.search_utils import search_cards
 from mydb import db_utils
+from psycopg2.extras import RealDictCursor
+from google.cloud import storage, secretmanager, vision
+from dotenv import load_dotenv
 
 import os
-from psycopg2.extras import RealDictCursor
-from google.cloud import storage
+import tempfile
 
-from dotenv import load_dotenv
+   
+
 load_dotenv()  # 確保 Flask 啟動時能讀到 .env
 
+def test_vision_with_secret():
+        
+        # 初始化 Secret Manager 客戶端
+        sm_client = secretmanager.SecretManagerServiceClient()
+        
+        # 設定 Secret 路徑 (使用您的 Secret ID)
+        project_id = "mysqlproject20250503"  # 替換為您的專案 ID
+        secret_id = "visionapikey20250508"  # 您的 Secret ID
+        version_id = "latest"
+        
+        secret_path = f"projects/{project_id}/secrets/{secret_id}/versions/{version_id}"
+        print(f"正在訪問 Secret: {secret_path}")
+        
+        # 訪問 Secret 內容
+        response = sm_client.access_secret_version(name=secret_path)
+        secret_payload = response.payload.data.decode('UTF-8')
+        
+        # 將 Secret 寫入臨時檔案
+        with tempfile.NamedTemporaryFile(mode='w+', delete=False) as temp_file:
+            temp_file.write(secret_payload)
+            credentials_path = temp_file.name
+        
+        
+        # 設定憑證環境變數
+        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credentials_path
 
-# 手動指定 GOOGLE_APPLICATION_CREDENTIALS
-# os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"D:\web\business_card_search_finally\opportune-sylph-458008-s5-4f14eab88eed.json"
+        # 清理臨時檔案
+        os.unlink(credentials_path)
+        return True, print("API完成")
 
 # 自動抓取環境變數設定的金鑰
 client = storage.Client()
@@ -47,9 +74,8 @@ def upload():
             fn = request.form['filename']
             text = request.form['corrected_text']
             save_to_postgres(fn, text)
-            #save_to_elasticsearch(fn, text)
             flash('已成功儲存！')
-            #return redirect(url_for('search'))
+            return redirect(url_for('search'))
 
         # 第一階段：上傳圖片並進行 Google Vision OCR
         file = request.files.get('file')
@@ -61,6 +87,19 @@ def upload():
             return redirect(request.url)
 
         fn = secure_filename(file.filename)
+
+        # 檢查檔案是否已存在於資料庫
+        conn = db_utils.get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT COUNT(*) FROM cards WHERE filename = %s", (fn,))
+        count = cursor.fetchone()[0]
+        conn.close()
+
+        if count > 0:
+            flash('此名片已上傳，請勿重複上傳。')
+            return redirect(request.url)
+
+        # 儲存圖片檔案
         path = os.path.join(app.config['UPLOAD_FOLDER'], fn)
         file.save(path)
 
@@ -73,6 +112,8 @@ def upload():
         return render_template('upload.html', filename=fn, ocr_text=ocr_text)
 
     return render_template('upload.html')
+
+
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
